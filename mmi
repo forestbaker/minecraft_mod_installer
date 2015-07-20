@@ -1,0 +1,155 @@
+#!/binbash
+#
+####################################  Minecraft Mod Installer - mmi  ######################################
+#
+#  Purpose: Upgrades or Installs dependencies for Minecraft Modding
+#  License: MIT 
+#  Authors: Keith Walsh & Forest Baker
+#  Copyright 2015 Keith Walsh & Forest Baker
+#  BASH 4 Compatible
+#  
+#  Version: 1.0
+#  Date: 06/19/2015
+#  Notes: OSX First - Very Rough!
+#
+#################################################  mmi  ###################################################
+
+######
+# Create Global Variables
+######
+
+JavaVersion=0
+ForgeVersion=0
+EclipseVersion=0
+
+# Set variables below to the website location of the application’s installer.
+# Right click on the link to the installer and select “Copy Link Location."  Set the variable to that URL
+JavaFileURL=0
+
+# Forge Version
+# New Version: http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.7.10-10.13.4.1472-1.7.10/forge-1.7.10-10.13.4.1472-1.7.10-src.zip
+# Stable Version: http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.7.10-10.13.4.1448-1.7.10/forge-1.7.10-10.13.4.1448-1.7.10-src.zip
+ForgeFileURL=0
+
+Source for Ecliplse 
+EclipseFileURL=0
+
+# Any more?
+
+
+######
+# Create Functions
+######
+
+# Turn this into a function called InstallJava
+# Create Folder structure
+mkdir -p “$HOME/install/mount”
+
+# The command below will get the jdk 64bit dmg file from Oracle.
+# and put it into a folder called “install” in $HOME
+# Probably should test the OS is 64-bit compatible and exit if not
+wget http://download.oracle.com/otn/java/jdk/7u76-b13/jdk-7u76-macosx-x64.dmg -O “$HOME/install/jdk-7u76-macosx-x64.dmg”
+# By default hdiutil mounts .dmg images to /Volumes/Name of Image File/ 
+## Students may not have access to that folder?
+## Instead mount the file to $HOME/install/mount - needs to be tested
+## Test that hdiutil exists, not familiar with that application 
+## “mount” is a potential alternative to hdiutil
+hdiutil mount $HOME/install/jdk-7u76-macosx-x64.dmg $HOME/install/mount
+
+# Copy files out or execute something to install?  
+cp -R copyFrom copyTo
+
+
+# Create a Function to add Java Directory to $PATH and modify profile files.
+# Then export the new path to $PATH or reload profile
+## Test if Java is installed and in $PATH - 
+## &> means redirect standard out AND standard error to /dev/null
+## Alternative: catch the version, edit and store in a variable.  
+## Compare variable to $JavaVersion
+## Alternative2:  do it with one line and no semi-colons
+java -version &> /dev/null
+# The above only tests that SOME version of Java is installed.  
+
+# create the functions InstallJava and TestJava (before this function)
+[ $? -gt 0 ] && InstallJava || TestJava
+# The above tests the exit status of the previous command (java -version)
+# Turn steps below into bash 
+# Learn about Regular Expressions(skip Extended RegEx) and then learn about sed:
+# use “sed s/oldpath/oldpath+newpath/g” to modify profile files
+# http://www.java.com/en/download/help/path.xml - Below steps come from here.
+For bash Shell:
+Edit the startup file (~/.bashrc)   ←.bashrc is not the only profile
+Modify PATH variable:
+PATH="$PATH":/usr/local/jdk1.6.0/bin
+export PATH
+Save and close the file
+Open new Terminal window
+Verify the PATH is set properly
+% java -version
+# end path modification
+
+# gradle deez nuts - need to set a variable with directory path to gradle
+# http://www.minecraftforge.net/wiki/Installation/Source
+## make sure gradle is executable - 
+## improve below to test executable permission first, and set if needed
+# chmod is a utility to set permissions - very important command
+# this command adds execute (+x) permission to the User and Group (ug) of the file
+chmod ug+x ./gradlew 
+./gradlew setupDecompWorkspace --refresh-dependencies
+
+######
+# Cleanup
+######
+
+# During cleanup step of script:
+## Unmount the JDK image - use $JavaFileURL
+## lookup “hdiutil unmount” for info on how it works
+# Unset variables - reset global variables to previous setting
+## Not necessary, but good practice.  
+# Remove any downloaded files with rm, remove a directory and contents
+# with rm -rf /absolute/path/to/folder
+# Make absolutely sure the correct folder is removed 
+# Do some more tests and print a friendly message.
+
+######################   Notes  ##############################
+
+# http://www.minecraftforge.net/wiki/Installation/Source
+# Posting this script to above link is likely to be appreciated 
+# (and critiqued/improved) 
+## It is possible to build the necessary directories at / 
+## This method allows multiple users to access a common resource on one server,
+## If you create a build server for students to use over SSH, 
+## students would not have to be physically present to participate.
+
+
+######
+# Forge Directory Structure and Usage
+######
+
+# /build/ 
+# The root directory for dealing with builds.
+#
+# /build/classes/ 
+# Just the compiled version of your mod.
+#
+# /build/libs/ 
+# Arguably, one of the most important folders, this folder is 
+# where the builds are compiled, obfuscated, and zipped into a .jar.
+#
+# /build/resources/ 
+# The location your resources end up at while being compiled into the final build.
+#
+# /eclipse/ 
+# The pre-built workspace for Eclipse IDE users.
+#
+# /gradle/ 
+# Just the gradle wrapper, the files that enable awesome build automation.
+#
+# /src/main/java 
+# The folder that the source code will be located in for eclipse, and push builds.
+#
+# /src/main/resources 
+# The location for your resources to be included in the build process
+#
+####################  End of Notes ########################
+exit 0

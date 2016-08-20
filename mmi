@@ -1,4 +1,4 @@
-#!/binbash
+#!/bin/bash
 #
 ####################################  Minecraft Mod Installer - mmi  ######################################
 #
@@ -14,9 +14,9 @@
 #
 #################################################  mmi  ###################################################
 
-######
-# Create Global Variables
-######
+###########################
+# Create Global Variables #
+###########################
 
 JavaVersion=0
 ForgeVersion=0
@@ -31,15 +31,15 @@ JavaFileURL=0
 # Stable Version: http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.7.10-10.13.4.1448-1.7.10/forge-1.7.10-10.13.4.1448-1.7.10-src.zip
 ForgeFileURL=0
 
-Source for Ecliplse 
+Source for Eclipse 
 EclipseFileURL=0
 
 # Any more?
 
 
-######
-# Create Functions
-######
+####################
+# Create Functions #
+####################
 
 # Turn this into a function called InstallJava
 # Create Folder structure
@@ -97,9 +97,9 @@ Verify the PATH is set properly
 chmod ug+x ./gradlew 
 ./gradlew setupDecompWorkspace --refresh-dependencies
 
-######
-# Cleanup
-######
+###########
+# Cleanup #
+###########
 
 # During cleanup step of script:
 ## Unmount the JDK image - use $JavaFileURL
@@ -122,9 +122,9 @@ chmod ug+x ./gradlew
 ## students would not have to be physically present to participate.
 
 
-######
-# Forge Directory Structure and Usage
-######
+#######################################
+# Forge Directory Structure and Usage #
+#######################################
 
 # /build/ 
 # The root directory for dealing with builds.
@@ -151,5 +151,5 @@ chmod ug+x ./gradlew
 # /src/main/resources 
 # The location for your resources to be included in the build process
 #
-####################  End of Notes ########################
+#################### End of Notes ########################
 exit 0
